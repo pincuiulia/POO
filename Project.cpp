@@ -1,0 +1,552 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+// DATA
+
+class Data
+{
+    int zi, luna, an;
+
+public:
+    // constructor
+    Data(int zi = 0, int luna = 0, int an = 0)
+    {
+        this->zi = zi; 
+        this->luna = luna;
+        this->an = an;
+    }
+
+    // constructor de copiere
+    Data(Data &d)
+    {
+        this->zi = d.zi;
+        this->luna = d.luna;
+        this->an = d.an;
+    }
+
+    // setteri si getter
+    void setData(int zi, int luna, int an)
+    {
+        this->zi = zi;
+        this->luna = luna;
+        this->an = an;
+    }
+
+    // zi
+    void setZi(int zi)
+    {
+        this->zi = zi;
+    }
+
+    int getZi()
+    {
+        return this->zi;
+    }
+    // luna
+    void setLuna(int luna)
+    {
+        this->luna = luna;
+    }
+
+    int getLuna()
+    {
+        return this->luna;
+    }
+    // an
+    void setAn(int an)
+    {
+        this->an = an;
+    }
+
+    int getAn()
+    {
+        return this->an;
+    }
+
+    // operatori
+
+    Data &operator=(Data &d)
+    {
+        this->zi = d.zi;
+        this->luna = d.luna;
+        this->an = d.an;
+        return *this;
+    }
+
+    // afisare
+    friend ostream &operator<<(ostream &, Data &);
+};
+
+ostream &operator<<(ostream &out, Data &d)
+{
+    out << d.zi << "." << d.luna << "." << d.an;
+    return out;
+}
+
+// PERIOADA
+
+class Perioada
+{
+
+    Data start;
+    Data finish;
+
+public:
+    // constructor de initializare
+    Perioada() : start(), finish() {}
+
+    // constructor
+    Perioada(Data start, Data finish)
+    {
+        this->start = start;
+        this->finish = finish;
+    } 
+
+    // constructor de copiere
+    Perioada(Perioada &p)
+    {
+        this->start = p.start;
+        this->finish = p.finish;
+    }
+
+    // setteri si getteri
+
+    void setPerioada(Data start, Data finish)
+    {
+        this->start = start;
+        this->finish = finish;
+    }
+    // start si finish
+    Data getStart() 
+    {
+        return this->start;
+    }
+
+    Data getFinish()
+    {
+        return this->start;
+    }
+
+    // operatori
+    Perioada &operator=(Perioada &d);
+
+    // afisare
+    friend ostream &operator<<(ostream &, Perioada &p);
+};
+
+ostream &operator<<(ostream &out, Perioada &p)
+{
+    out << p.start << " - " << p.finish;
+    return out;
+}
+
+Perioada &Perioada::operator=(Perioada &d)
+{
+    this->start = d.start;
+    this->finish = d.finish;
+    return *this;
+}
+
+// PERSOANA
+
+class Persoana
+{
+    char *nume, *prenume, telefon[11];
+
+public:
+    // constructori
+    Persoana()
+    {
+        this->nume = NULL;
+        this->prenume = NULL;
+        strcpy(this->telefon, "0770000000");
+    }
+
+    Persoana(char *nume, char *prenume, char *telefon)
+    {
+        this->nume = new char[strlen(nume) + 1];
+        strcpy(this->nume, nume);
+        this->prenume = new char[strlen(prenume) + 1];
+        strcpy(this->prenume, prenume);
+        strcpy(this->telefon, telefon);
+    }
+
+    // destructor
+    ~Persoana()
+    {
+        delete this->nume;
+        delete this->prenume;
+    }
+
+    // constructor de copiere
+    Persoana(Persoana &p)
+    {
+        this->nume = new char[strlen(p.nume) + 1];
+        strcpy(this->nume, p.nume);
+        this->prenume = new char[strlen(p.prenume) + 1];
+        strcpy(this->prenume, p.prenume);
+        strcpy(this->telefon, p.telefon);
+    }
+
+    Persoana &operator=(Persoana &p)
+    {
+        this->nume = new char[strlen(p.nume) + 1];
+        strcpy(this->nume, p.nume);
+        this->prenume = new char[strlen(p.prenume) + 1];
+        strcpy(this->prenume, p.prenume);
+        strcpy(this->telefon, p.telefon);
+        return *this;
+    }
+
+    // setteri & getteri
+    void setNume(char *nume)
+    {
+        delete this->nume;
+        this->nume = new char[strlen(nume) + 1];
+        strcpy(this->nume, nume);
+    }
+
+    char *getNume()
+    {
+        return this->nume;
+    }
+
+    void setPrenume(const char *prenume)
+    {
+        delete this->prenume;
+        this->prenume = new char[strlen(prenume) + 1];
+        strcpy(this->prenume, prenume);
+    }
+
+    char *getPrenume()
+    {
+        return this->prenume;
+    }
+
+    void setTelefon(char *telefon)
+    {
+        strcpy(this->telefon, telefon);
+    }
+
+    char *getTelefon()
+    {
+        return this->telefon;
+    }
+
+    void afisare()
+    {
+        cout << this->nume << " " << this->prenume << " " << this->telefon;
+    }
+
+    friend ostream &operator<<(ostream &, Persoana &);
+};
+
+ostream &operator<<(ostream &out, Persoana &p)
+{
+    out << "--->Nume: " << p.nume << " ; " << p.prenume << " Telefon: " << p.telefon;
+    return out;
+}
+
+// TASK
+
+class Task
+{
+    char *nume;
+    int nrResponsabili;
+    Persoana *responsabili;
+    Data deadline;
+
+public:
+    // constructor
+    Task(char *nume, int nrResponsabili, Persoana *responsabili, Data deadline);
+
+    // constructor de initializare
+
+    Task();
+
+    // constructor de copiere
+    Task(Task &t);
+
+    // destructor
+
+    ~Task()
+    {
+        delete this->nume;
+        delete this->responsabili;
+        this->nrResponsabili = 0;
+    }
+    // operatori
+    Task &operator=(Task &t);
+
+    Task &operator+(Persoana &p); // task + persoana => imi adauga persoana la task
+
+    //getter
+      Data getDataTask()
+    {
+        return this->deadline;
+    }
+
+     char* getNumeTask()
+     {
+        return this->nume;
+     }
+    // afisare
+
+    friend ostream &operator<<(ostream &, Task &);
+};
+
+// constructor
+Task::Task(char *nume, int nrResponsabili, Persoana *responsabili, Data deadline)
+{
+    this->nume = new char[strlen(nume) + 1];
+    strcpy(this->nume, nume);
+    this->nrResponsabili = nrResponsabili;
+    this->responsabili = new Persoana[nrResponsabili];
+    for (int i = 0; i < nrResponsabili; ++i)
+    {
+        this->responsabili[i] = responsabili[i];
+    }
+    this->deadline = deadline;
+}
+
+Task::Task()
+{
+    this->nume = NULL;
+    this->nrResponsabili = 0;
+}
+
+Task::Task(Task &t)
+{
+    this->nume = new char[strlen(t.nume) + 1];
+    strcpy(this->nume, t.nume);
+    this->nrResponsabili = t.nrResponsabili;
+    this->responsabili = new Persoana[t.nrResponsabili];
+    for (int i = 0; i < t.nrResponsabili; ++i)
+    {
+        this->responsabili[i] = t.responsabili[i];
+    }
+    this->deadline = t.deadline;
+}
+
+Task &Task::operator=(Task &t)
+{
+    delete[] this->nume;
+    this->nume = new char[strlen(t.nume) + 1];
+    strcpy(this->nume, t.nume);
+    this->nrResponsabili = t.nrResponsabili;
+    delete[] this->responsabili;
+    this->responsabili = new Persoana[t.nrResponsabili];
+    for (int i = 0; i < t.nrResponsabili; ++i)
+    {
+        this->responsabili[i] = t.responsabili[i];
+    }
+    this->deadline = t.deadline;
+    return *this;
+}
+
+Task &Task::operator+(Persoana &p)
+{
+    Persoana aux[this->nrResponsabili];
+    for (int i = 0; i < this->nrResponsabili; ++i)
+    {
+        aux[i] = this->responsabili[i];
+    }
+    delete[] this->responsabili;
+    this->responsabili = new Persoana[this->nrResponsabili + 1];
+    for (int i = 0; i < this->nrResponsabili; ++i)
+    {
+        this->responsabili[i] = aux[i];
+    }
+    this->responsabili[this->nrResponsabili] = p;
+    ++this->nrResponsabili;
+ 
+    return *this;
+} ///////////////
+
+// afisare
+ostream &operator<<(ostream &out, Task &t)
+{
+    out << "Task: " << t.nume << endl
+         << "Deadline: " << t.deadline << endl
+        << "Numar responsabili: " << t.nrResponsabili << endl;
+
+    for(int i=0;i<t.nrResponsabili; ++i)
+    out << "Responsabili: " << t.responsabili[i] << endl;
+        
+
+    return out;
+}
+
+// PROIECT
+
+class Proiect
+{
+private:
+    Persoana PM;
+    Task *taskuri;
+    int nrTaskuri;
+    Perioada perioada;
+
+public:
+    // constructori
+    Proiect(Persoana PM, Task *taskuri, Perioada perioada, int nrTaskuri);
+    Proiect(Proiect &p);
+    // destructor
+    ~Proiect();
+    // setteri si getteri
+    // PM
+
+    void setPM(Persoana PM)
+    {
+        this->PM = PM;
+    }
+
+    Persoana getPM()
+    {
+        return this->PM;
+    }
+
+    // nrtaskuri
+    void setNrTaskuri(int nrTaskuri)
+    {
+        this->nrTaskuri = nrTaskuri;
+    }
+
+    int getNrTaskuri()
+    {
+        return this->nrTaskuri;
+    }
+
+    // Taskuri
+    void setTaskuri(Task *taskuri, int nrTaskuri)
+    {
+        delete this->taskuri;
+        this->taskuri = new Task[nrTaskuri];
+        for (int i = 0; i < nrTaskuri; i++)
+            this->taskuri[i] = taskuri[i];
+    }
+
+    Task *getTaskuri()
+    {
+        return this->taskuri;
+    }
+
+    // perioada
+    void setPerioadaProiect(Perioada perioada)
+    {
+        this->perioada = perioada;
+    }
+
+    Perioada getPerioadaProiect()
+    {
+        return this->perioada;
+    }
+
+    // operatori
+    friend ostream &operator<<(ostream &out, Proiect &p);
+
+    // metoda
+    int CalculTaskuri(int nr , Perioada p);
+};
+
+// constructori
+Proiect::Proiect(Persoana PM, Task *taskuri, Perioada perioada, int nrTaskuri)
+{
+    this->PM = PM;
+    this->nrTaskuri = nrTaskuri;
+    this->taskuri = new Task[nrTaskuri];
+    for (int i = 0; i < nrTaskuri; i++)
+        this->taskuri[i] = taskuri[i];
+    this->perioada = perioada;
+}
+
+Proiect::Proiect(Proiect &p)
+{
+    this->PM = p.PM;
+    this->nrTaskuri = p.nrTaskuri;
+    this->taskuri = new Task[p.nrTaskuri];
+    for (int i = 0; i < nrTaskuri; i++)
+        this->taskuri[i] = p.taskuri[i];
+    this->perioada = p.perioada;
+}
+
+// destructor
+
+Proiect::~Proiect()
+{
+    delete this->taskuri;
+    nrTaskuri = 0;
+}
+
+// operatori
+
+ostream &operator<<(ostream &out, Proiect &p)
+{
+    out << "Project Managerul proiectului are urmatoarele date:" << p.PM << " " << endl
+        << "Numar Taskuri: " << p.nrTaskuri << endl<< "Taskuri: " <<endl;
+        for(int i=0;i<p.nrTaskuri;++i)
+        out << "~"<<p.taskuri[i].getNumeTask() << endl; 
+        out <<"Perioada: " << p.perioada<<endl<<endl;
+    return out;
+}
+// metoda
+
+int Proiect::CalculTaskuri(int nr, Perioada p){
+    nr=0;
+    for(int i=0;i<this->nrTaskuri;++i)
+
+    if(this->taskuri[i].getDataTask().getAn() == p.getFinish().getAn() && this->taskuri[i].getDataTask().getAn() == p.getStart().getAn() )
+        if(this->taskuri[i].getDataTask().getLuna() >= p.getStart().getLuna() && this->taskuri[i].getDataTask().getLuna() <= p.getFinish().getLuna())
+            if(this->taskuri[i].getDataTask().getZi() >= p.getStart().getZi() && this->taskuri[i].getDataTask().getZi() <= p.getFinish().getZi())
+            {
+        cout<<nr;
+        nr++;
+             }
+
+
+    return nr;
+
+}
+
+int main()
+{
+
+   
+
+    Data data1(11, 3, 2023), data2(18, 4, 2023), data3(14, 4, 2023), data4(20, 4, 2023), data5(16, 4, 2023);
+    Perioada perioada1(data1, data2), perioada2(data3, data4);
+    Persoana pm("Iulia", "Pincu", "0763307434"), responsabil1("Ion", "Marcel", "0712345678"), responsabil2("Ana", "Maria", "074567890");
+    Persoana responsabili1[] = {responsabil1, responsabil2};
+    Persoana  responsabil3("George", "Ionescu", "0761367890"),responsabil4("Floricica", "Margareta", "0781378890"),responsabil5("Bianca", "Malureanu", "0766367270");
+    Persoana responsabili2[] = {responsabil3, responsabil4, responsabil5}, responsabili3[] = {responsabil1, responsabil5, responsabil2};
+    Task task1("Impartit bilete", 2, responsabili1, data3),task2("Contorizare intrari concurs", 3, responsabili2, data4),task3("Bufet", 3, responsabili3, data5);
+
+    cout<<"Descriere Taskul 1: "<<endl<<endl;
+
+    cout << task1<<endl<<endl<<endl;
+
+// Adaugam responsabil la task
+    task1+responsabil3;
+    
+    cout<<"Adaugam responsabilul 3 la Taskul 1, dupa care vizualizam situatia actuala a acestuia:"<<endl;
+
+    cout<<task1<<endl<<endl<<endl;
+    Task taskuri[]={task1,task2,task3};
+    Proiect Giveaway(pm,taskuri,perioada1,3);
+    cout<<"Detalii despre Proiect"<<endl<<endl;
+    cout<<Giveaway<<endl<<endl<<endl;
+    
+    int taskuri_perioada;
+
+    taskuri_perioada=Giveaway.CalculTaskuri(taskuri_perioada, perioada1);
+
+    cout<<"Numarul de taskuri din perioada "<<perioada1<<" este "<<taskuri_perioada;
+
+    
+
+
+   
+    return 0;
+}
