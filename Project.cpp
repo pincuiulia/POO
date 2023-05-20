@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cstring>
+#include <string.h>
+#include <vector>
+
 
 using namespace std;
 
@@ -136,7 +139,7 @@ class Persoana
 private:
 
     static int nrPersoane;
-    char  telefon[11];
+    string  telefon;
 
 protected:
 
@@ -148,7 +151,7 @@ public:
         ++nrPersoane;
         this->nume = NULL;
         this->prenume = NULL;
-        strcpy(this->telefon, "0770000000");
+        this->telefon="0770000000";
     }
 
     Persoana(char *nume, char *prenume, char *telefon){
@@ -157,7 +160,7 @@ public:
         strcpy(this->nume, nume);
         this->prenume = new char[strlen(prenume) + 1];
         strcpy(this->prenume, prenume);
-        strcpy(this->telefon, telefon);
+        this->telefon=telefon;
     }
 
     // destructor
@@ -174,7 +177,7 @@ public:
         strcpy(this->nume, p.nume);
         this->prenume = new char[strlen(p.prenume) + 1];
         strcpy(this->prenume, p.prenume);
-        strcpy(this->telefon, p.telefon);
+        this->telefon=p.telefon;
     }
 
     Persoana &operator=(Persoana &p){
@@ -182,7 +185,7 @@ public:
         strcpy(this->nume, p.nume);
         this->prenume = new char[strlen(p.prenume) + 1];
         strcpy(this->prenume, p.prenume);
-        strcpy(this->telefon, p.telefon);
+        this->telefon=p.telefon;
         return *this;
     }
 
@@ -207,11 +210,11 @@ public:
         return this->prenume;
     }
 
-    void setTelefon(char *telefon){
-        strcpy(this->telefon, telefon);
+    void setTelefon(string telefon){
+        this->telefon=telefon;
     }
 
-    char *getTelefon(){
+    string getTelefon(){
         return this->telefon;
     }
 
@@ -433,13 +436,13 @@ class Proiect
 {
 private:
     Project_Manager PM;
-    Task *taskuri;
+    vector <Task*> taskuri;
     int nrTaskuri;
     Perioada perioada;
 
 public:
     // constructori
-    Proiect(Project_Manager PM, Task *taskuri, Perioada perioada, int nrTaskuri);
+    Proiect(Project_Manager PM, vector<Task*>taskuri, Perioada perioada, int nrTaskuri);
     Proiect(){
         nrTaskuri=0;
     }
@@ -471,17 +474,16 @@ public:
     }
 
     // Taskuri
-    void setTaskuri(Task *taskuri, int nrTaskuri)
+    void setTaskuri(vector<Task*>taskuri, int nrTaskuri)
     {
-        delete this->taskuri;
-        this->taskuri = new Task[nrTaskuri];
+
         for (int i = 0; i < nrTaskuri; i++)
             this->taskuri[i] = taskuri[i];
     }
 
-    Task *getTaskuri()
+    vector <Task*> getTaskuri()
     {
-        return this->taskuri;
+        return taskuri;
     }
 
     // perioada
@@ -503,13 +505,12 @@ public:
 };
 
 // constructori
-Proiect::Proiect(Project_Manager PM, Task *taskuri, Perioada perioada, int nrTaskuri)
+Proiect::Proiect(Project_Manager PM, vector<Task*>taskuri, Perioada perioada, int nrTaskuri)
 {
     this->PM = PM;
     this->nrTaskuri = nrTaskuri;
-    this->taskuri = new Task[nrTaskuri];
     for (int i = 0; i < nrTaskuri; i++)
-        this->taskuri[i] = taskuri[i];
+        this->taskuri.push_back(taskuri[i]);
     this->perioada = perioada;
 }
 
@@ -517,9 +518,8 @@ Proiect::Proiect(Proiect &p)
 {
     this->PM = p.PM;
     this->nrTaskuri = p.nrTaskuri;
-    this->taskuri = new Task[p.nrTaskuri];
     for (int i = 0; i < nrTaskuri; i++)
-        this->taskuri[i] = p.taskuri[i];
+        this->taskuri.push_back(p.taskuri[i]);
     this->perioada = p.perioada;
 }
 
@@ -527,7 +527,10 @@ Proiect::Proiect(Proiect &p)
 
 Proiect::~Proiect()
 {
-    delete this->taskuri;
+    for(int i = 0; i < this->taskuri.size(); ++i)
+    {
+        delete this->taskuri[i];
+    }
     nrTaskuri = 0;
 }
 
@@ -538,7 +541,7 @@ ostream &operator<<(ostream &out, Proiect &p)
     out << "Project Managerul proiectului are urmatoarele date:" << p.PM << " " << endl
         << "Numar Taskuri: " << p.nrTaskuri << endl<< "Taskuri: " <<endl;
     for(int i=0;i<p.nrTaskuri;++i)
-        out << "~"<<p.taskuri[i].getNumeTask() << endl;
+        out << "~"<<p.taskuri[i]->getNumeTask() << endl;
     out <<"Perioada: " << p.perioada<<endl<<endl;
     return out;
 }
@@ -548,9 +551,9 @@ int Proiect::CalculTaskuri(int nr, Perioada p){
     nr=0;
     for(int i=0;i<this->nrTaskuri;++i)
 
-        if(this->taskuri[i].getDataTask().getAn() == p.getFinish().getAn() && this->taskuri[i].getDataTask().getAn() == p.getStart().getAn() )
-            if(this->taskuri[i].getDataTask().getLuna() >= p.getStart().getLuna() && this->taskuri[i].getDataTask().getLuna() <= p.getFinish().getLuna())
-                if(this->taskuri[i].getDataTask().getZi() >= p.getStart().getZi() && this->taskuri[i].getDataTask().getZi() <= p.getFinish().getZi())
+        if(this->taskuri[i]->getDataTask().getAn() == p.getFinish().getAn() && this->taskuri[i]->getDataTask().getAn() == p.getStart().getAn() )
+            if(this->taskuri[i]->getDataTask().getLuna() >= p.getStart().getLuna() && this->taskuri[i]->getDataTask().getLuna() <= p.getFinish().getLuna())
+                if(this->taskuri[i]->getDataTask().getZi() >= p.getStart().getZi() && this->taskuri[i]->getDataTask().getZi() <= p.getFinish().getZi())
                 {
                     cout<<nr;
                     nr++;
@@ -852,21 +855,23 @@ int main (){
     Persoana responsabili1[] = {responsabil1, responsabil2};
     Persoana  responsabil3("George", "Ionescu", "0761367890"),responsabil4("Floricica", "Margareta", "0781378890"),responsabil5("Bianca", "Malureanu", "0766367270");
     Persoana responsabili2[] = {responsabil3, responsabil4, responsabil5}, responsabili3[] = {responsabil1, responsabil5, responsabil2};
-    Task task1("Impartit bilete", 2, responsabili1, data3),task2("Contorizare intrari concurs", 3, responsabili2, data4),task3("Bufet", 3, responsabili3, data5);
+    Task* task1 = new Task("Impartit bilete", 2, responsabili1, data3);
+    Task* task2 = new Task("Contorizare intrari concurs", 3, responsabili2, data4);
+    Task* task3 = new Task("Bufet", 3, responsabili3, data5);
 
     cout<<"Descriere Taskul 1: "<<endl<<endl;
 
     cout << task1<<endl<<endl<<endl;
-
 // Adaugam responsabil la task
-    task1+responsabil3;
+    Task task_aux("Bufet", 3, &responsabil3, data5);
+    task_aux+responsabil3;
 
     cout<<"Adaugam responsabilul 3 la Taskul 1, dupa care vizualizam situatia actuala a acestuia:"<<endl;
     Project_Manager om("Iulia","Pincu","0763307434",dataSTART,"MF");
 
 
     cout<<task1<<endl<<endl<<endl;
-    Task taskuri[]={task1,task2,task3};
+    vector<Task*> taskuri={task1,task2,task3};
     Proiect Giveaway(om,taskuri,perioada1,3);
     cout<<"Detalii despre Proiect"<<endl<<endl;
     cout<<Giveaway<<endl<<endl<<endl;
@@ -884,7 +889,7 @@ int main (){
 
     //BUGETE
 
-    Bani_ONG* bani= new Buget_Proiect();;
+    Bani_ONG* bani= new Buget_Proiect();
     bani->calcul_buget();
     bani->Calcul_nr_Bugete();
 
@@ -934,6 +939,9 @@ int main (){
     } catch (const Varsta_Invalida& e) {
         std::cout << e.what() << "\n";
     }
+
+
+
 
 
 
